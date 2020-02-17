@@ -11,7 +11,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#"> Todo List <span class="sr-only">(current)</span></a>
+                    <a @click="loadTodo()" class="nav-link" href="#"> Todo List <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"> Create </a>
@@ -19,6 +19,7 @@
                 </ul>
             </div>
         </nav>
+        <!--create page-->
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">Add New Todo</h3>
@@ -27,15 +28,15 @@
                 <label for="bookTitle"><small>* Required</small></label><br>
                 <label for="bookTitle">Description</label><br>
                 <input type="text" v-model="newDescription" class="form-control"><br>
-                <button type="button" class="btn btn-primary" v-on:click="saveTodo()"> Cancel </button>&nbsp;
+                <button type="button" class="btn btn-primary" v-on:click="loadTodo()"> Cancel </button>&nbsp;
                 <button type="button" class="btn btn-primary" v-on:click="saveTodo()"> Save </button> 
             </div>
         </div>
         <br>
+        <!--home page-->
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">Todo List</h3>
-                <button type="button" class="btn btn-danger" v-on:click="loadTodo()"> Load Todo </button><br><br>
                     <div class="card" v-for="(todo) in todos" v-bind:key="todo.id">
                     <div class="card-body" > 
                         <h5>{{todo.task}}</h5>
