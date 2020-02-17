@@ -11,16 +11,16 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a @click="loadTodo()" class="nav-link" href="#"> Todo List <span class="sr-only">(current)</span></a>
+                    <a @click="loadTodo() , showCreate = 0 , showTodo = 1" class="nav-link" href="#"> Todo List <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"> Create </a>
+                    <a @click="showTodo =0 , showCreate = 1" class="nav-link" href="#"> Create </a>
                 </li>
                 </ul>
             </div>
         </nav>
         <!--create page-->
-        <div class="card">
+        <div v-if="showCreate" class="card">
             <div class="card-body">
                 <h3 class="card-title">Add New Todo</h3>
                 <label for="bookTitle">Input todo</label><br>
@@ -34,7 +34,7 @@
         </div>
         <br>
         <!--home page-->
-        <div class="card">
+        <div v-if="showTodo" class="card">
             <div class="card-body">
                 <h3 class="card-title">Todo List</h3>
                     <div class="card" v-for="(todo) in todos" v-bind:key="todo.id">
@@ -78,7 +78,9 @@ export default {
                 todos:[],
                 newTask:'',
                 newDescription:'',
-                removeTask:'' 
+                removeTask:'',
+                showTodo: false,
+                showCreate: false
             }
     },
     firestore() {
