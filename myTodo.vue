@@ -20,6 +20,7 @@
                 </ul>
             </div>
         </nav>
+        <br>
 
         <!--create page-->
         <div v-if="showCreate" >
@@ -59,10 +60,16 @@
                 <div class="card-body" > 
                     <h5 class="card-title">{{ todo.task }}</h5>
                     <p class="card-text">{{ todo.description }}</p>
-                    <button v-on:click=" editTodo(todo) , showTodo = false , showEdit = true" class="btn btn-primary" > Edit </button>&nbsp;
-                    <button class="btn btn-danger" v-on:click="removeTodo(todo.id)"> Delete </button>&nbsp;
-                    <button v-if="index !== 0" type="button" class="btn btn-outline-info" v-on:click="moveUp(index)"> Up </button>&nbsp;
-                    <button v-if="index !== todos.length-1" type="button" class="btn btn-outline-info" v-on:click="moveDown(index)"> Down </button><br> 
+                    <div class="row">
+                        <div class="col-auto mr-auto">
+                            <button v-on:click=" editTodo(todo) , showTodo = false , showEdit = true" class="btn btn-primary" > Edit </button>&nbsp;
+                            <button class="btn btn-danger" v-on:click="removeTodo(todo.id)"> Delete </button>&nbsp;
+                        </div>
+                    <div class="col-auto">
+                        <button v-if="index !== 0" type="button" class="btn btn-outline-info" v-on:click="moveUp(index)"> Up </button>&nbsp;
+                        <button v-if="index !== todos.length-1" type="button" class="btn btn-outline-info" v-on:click="moveDown(index)"> Down </button><br> 
+                    </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -170,7 +177,6 @@ export default {
                 if (index === 0) { return }
                 let todo = this.todos[index]
                 this.todos.splice(index, 1)
-                console.log(todo)
                 this.todos.splice(index-1, 0, todo)
         },
             moveDown(index) {
