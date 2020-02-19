@@ -1,5 +1,6 @@
 <template>
     <div id="app" class="container">
+      <!--nav bar-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a v-on:click="loadTodo()" class="navbar-brand" href="#"><h4> MyTodo </h4></a>
             <button class="navbar-toggler" type="button" 
@@ -15,7 +16,7 @@
                     <a v-on:click="loadTodo() , showCreate = false , showTodo = true" class="nav-link" href="#"> Todo List <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a v-on:click="showTodo = false , showCreate = true, isEmpty = false" class="nav-link" href="#"> Create <span class="sr-only">(current)</span></a>
+                    <a v-on:click="showTodo = false , showCreate = true, isEmpty = false ,emptySave = false" class="nav-link" href="#"> Create <span class="sr-only">(current)</span></a>
                 </li>
                 </ul>
             </div>
@@ -29,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label for="todoTitle"> Input todo </label><br>
-                <input v-model="newTask" v-on:click="isEmpty = true,emptySave = false" type="text" class="form-control">
+                <input v-model="newTask" v-on:click="isEmpty = false, emptySave = false" type="text" class="form-control">
                 <label for="todoTitle" class="form-text text-muted"><small>* Required</small></label><br>
             </div>
             <div class="form-group">    
@@ -111,7 +112,8 @@ export default {
                 currentlyEditing: null,
                 taskEditText: '',
                 descriptionEditText:'',
-                emptySave:false
+                emptySave:false,
+                textBlank:false
             }
     },
     mounted() {
@@ -173,6 +175,10 @@ export default {
                         });  
                 this.loadTodo();        
                     },
+            checkEmpty() {
+                if(this.newTask.value == '')
+                  return this.textBlank = true ;
+            },
             moveUp(index) {
                 if (index === 0) { return }
                 let todo = this.todos[index]
