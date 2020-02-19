@@ -23,12 +23,12 @@
 
         <!--create page-->
         <div v-if="showCreate" >
-            <div v-if="isEmpty" class="alert alert-danger" role="alert">
+            <div v-if="emptySave" class="alert alert-danger" role="alert">
                 Please Enter Todo !!!
             </div>
             <div class="form-group">
                 <label for="todoTitle"> Input todo </label><br>
-                <input v-model="newTask" v-on:click="isEmpty = false" type="text" class="form-control">
+                <input v-model="newTask" v-on:click="isEmpty = true,emptySave = false" type="text" class="form-control">
                 <label for="todoTitle" class="form-text text-muted"><small>* Required</small></label><br>
             </div>
             <div class="form-group">    
@@ -36,8 +36,8 @@
                 <input v-model="newDescription" type="text" class="form-control"><br>
             </div>
                 <button type="button" class="btn btn-primary" v-on:click="loadTodo(), showCreate = false , showTodo = true"> Cancel </button>&nbsp;
-                <button v-if="isEmpty !== true" type="button" class="btn btn-primary"  v-on:click="saveTodo(), showCreate = false , showTodo = true"> Save </button>
-                <button type="button" class="btn btn-primary" v-if="isEmpty === true" v-on:click="showCreate = true , showTodo = false "> Save </button>   
+                <button v-if="!isEmpty" type="button" class="btn btn-primary" v-on:click="showCreate = true , showTodo = false ,emptySave = true"> Save </button>
+                <button v-else type="button" class="btn btn-primary"  v-on:click="saveTodo(), showCreate = false , showTodo = true"> Save </button>   
         </div>
         <!--edit page-->
         <div v-if="showEdit" >
@@ -100,10 +100,11 @@ export default {
                 showTodo: true,
                 showCreate: false,
                 showEdit:false,
-                isEmpty: 'false',
+                isEmpty: false,
                 currentlyEditing: null,
                 taskEditText: '',
-                descriptionEditText:''
+                descriptionEditText:'',
+                emptySave:false
             }
     },
     mounted() {
