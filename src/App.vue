@@ -16,7 +16,7 @@
                     <a v-on:click="loadTodo() , showCreate = false , showTodo = true" class="nav-link" href="#"> Todo List <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a v-on:click="showTodo = false , showCreate = true, isEmpty = false ,emptySave = false" class="nav-link" href="#"> Create <span class="sr-only">(current)</span></a>
+                    <a v-on:click="showTodo = false , showCreate = true,emptySave = false" class="nav-link" href="#"> Create <span class="sr-only">(current)</span></a>
                 </li>
                 </ul>
             </div>
@@ -30,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label for="todoTitle"> Input todo </label><br>
-                <input v-model="newTask" v-on:click="isEmpty = false, emptySave = false" type="text" class="form-control">
+                <input v-model="newTask" v-on:click="isEmpty = true" v-on:change="isEmpty = false , emptySave = false" type="text" class="form-control">
                 <label for="todoTitle" class="form-text text-muted"><small>* Required</small></label><br>
             </div>
             <div class="form-group">    
@@ -38,8 +38,8 @@
                 <input v-model="newDescription" type="text" class="form-control"><br>
             </div>
                 <button type="button" class="btn btn-primary" v-on:click="loadTodo(), showCreate = false , showTodo = true"> Cancel </button>&nbsp;
-                <button v-if="!isEmpty" type="button" class="btn btn-primary" v-on:click="showCreate = true , showTodo = false ,emptySave = true"> Save </button>
-                <button v-else type="button" class="btn btn-primary"  v-on:click="saveTodo(), showCreate = false , showTodo = true"> Save </button>   
+                <button v-if="isEmpty" type="button" class="btn btn-primary" v-on:click="showCreate = true , showTodo = false ,emptySave = true"> Save </button>
+                <button v-else-if="isEmpty !== true" type="button" class="btn btn-primary"  v-on:click="saveTodo(), showCreate = false , showTodo = true"> Save </button>   
         </div>
         <!--edit page-->
         <div v-if="showEdit" >
@@ -113,7 +113,6 @@ export default {
                 taskEditText: '',
                 descriptionEditText:'',
                 emptySave:false,
-                textBlank:false
             }
     },
     mounted() {
@@ -127,7 +126,7 @@ export default {
     methods: {
         saveTodo() {
             let todo = [];
-                if(this.newTask && this.newDescription != false){
+                if(this.newTask != false){
                     db.collection('todos').add({
                         task : this.newTask,
                         description : this.newDescription,
@@ -175,10 +174,6 @@ export default {
                         });  
                 this.loadTodo();        
                     },
-            checkEmpty() {
-                if(this.newTask.value == '')
-                  return this.textBlank = true ;
-            },
             moveUp(index) {
                 if (index === 0) { return }
                 let todo = this.todos[index]
