@@ -26,7 +26,6 @@
             <div v-if="isEmpty" class="alert alert-danger" role="alert">
                 Please Enter Todo !!!
             </div>
-
             <div class="form-group">
                 <label for="todoTitle"> Input todo </label><br>
                 <input v-model="newTask" v-on:click="isEmpty = false" type="text" class="form-control">
@@ -37,17 +36,30 @@
                 <input v-model="newDescription" type="text" class="form-control"><br>
             </div>
                 <button type="button" class="btn btn-primary" v-on:click="loadTodo(), showCreate = false , showTodo = true"> Cancel </button>&nbsp;
-                <button type="button" class="btn btn-primary" v-if="isEmpty !== true" v-on:click="saveTodo(), showCreate = false , showTodo = true"> Save </button>
-                <button type="button" class="btn btn-primary" v-if="isEmpty" v-on:click="showCreate = true , showTodo = false , isEmpty = true"> Save </button>   
+                <button v-if="isEmpty !== true" type="button" class="btn btn-primary"  v-on:click="saveTodo(), showCreate = false , showTodo = true"> Save </button>
+                <button type="button" class="btn btn-primary" v-if="isEmpty === true" v-on:click="showCreate = true , showTodo = false "> Save </button>   
         </div>
-        <br>
+        <!--edit page-->
+        <div v-if="showEdit" >
+            <div class="form-group">
+                <label for="todoTitle"> Input todo </label><br>
+                <input v-model="taskEditText" v-on:click="isEmpty = false" type="text" class="form-control">
+                <label for="todoTitle" class="form-text text-muted"><small>* Required</small></label><br>
+            </div>
+            <div class="form-group">    
+                <label for="todoTitle"> Description </label><br>
+                <input v-model="descriptionEditText" type="text" class="form-control"><br>
+            </div>
+                <button type="button" class="btn btn-primary" v-on:click="loadTodo(), showCreate = false , showTodo = true"> Cancel </button>&nbsp;
+                <button v-if="isEmpty !== true" type="button" class="btn btn-primary"  v-on:click="updateTodoText(), showEdit = false , showTodo = true"> Save </button>
+        </div>
         <!--home page-->
         <div v-if="showTodo">
             <div  class="card mb-2" v-for="(todo , index) in todos" v-bind:key="todo.id">
                 <div class="card-body" > 
                     <h5 class="card-title">{{ todo.task }}</h5>
                     <p class="card-text">{{ todo.description }}</p>
-                    <button v-on:click=" todoRef = todo.id ,showCreate = true , showTodo = false , isEdit = true" class="btn btn-primary" > Edit </button>&nbsp;
+                    <button v-on:click=" editTodo(todo) , showTodo = false , showEdit = true" class="btn btn-primary" > Edit </button>&nbsp;
                     <button class="btn btn-danger" v-on:click="removeTodo(todo.id)"> Delete </button>&nbsp;
                     <button v-if="index !== 0" type="button" class="btn btn-outline-info" v-on:click="moveUp(index)"> Up </button>&nbsp;
                     <button v-if="index !== todos.length-1" type="button" class="btn btn-outline-info" v-on:click="moveDown(index)"> Down </button><br> 
@@ -87,9 +99,11 @@ export default {
                 removeTask:'',
                 showTodo: true,
                 showCreate: false,
-                isEdit: false,
-                isEmpty:false,
-                docRef:''
+                showEdit:false,
+                isEmpty: 'false',
+                currentlyEditing: null,
+                taskEditText: '',
+                descriptionEditText:''
             }
     },
     mounted() {
@@ -125,13 +139,24 @@ export default {
                 });
                 this.todos = todolist;
             },
-            editTodo(collectionID){
-                db.collection('todos').doc(collectionID).update({ 
-                    task: newTodo
-                    })
-                .then(() => {
-                    console.log('updated!')
+            editTodo(todo){
+                this.currentlyEditing = todo.id;
+                this.taskEditText = todo.task;
+                this.descriptionEditText = todo.description;
+            },
+            updateTodoText(){
+                db.collection('todos').doc(this.currentlyEditing).update({
+                    task:this.taskEditText,
+                    description:this.descriptionEditText
+                }).then(function(doc) {
+                    console.log("Updated !!!");
+                })
+                .catch(function(error) {
+                    console.error("Error updating document text: ", error);
                 });
+                this.currentlyEditing = null;
+                this.todoEditText = '';
+                this.loadTodo();
             },
             removeTodo(collectionID) {
                 db.collection('todos').doc(collectionID).delete().then(function() {
@@ -152,7 +177,7 @@ export default {
                 let todo = this.todos[index]
                 this.todos.splice(index, 1)
                 this.todos.splice(index+1, 0, todo)
-        }         
+        }        
         }
         
     }
